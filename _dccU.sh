@@ -3,7 +3,7 @@
 
 # download control file
 # If the download fails the program through a error and finish
-if ! /usr/bin/wget --no-check-certificate https://dcc.hocnet.pt/_dcc/_dcc.v.txt -q \
+if ! /usr/bin/wget --no-check-certificate https://dcc.airjoni.xyz/_dcc/_dcc.v.txt -q \
         -O /home/_src/versionu.txt >/dev/null 2>&1; then
         echo "_dcc.v.txt failed"
         exit 0
@@ -20,19 +20,20 @@ RESTARTCRON2="1"
 TEXTOEMAIL="Relatorio"
 TEXTOEMAIL+="\n============="
 EMAIL_de_ENVIO="servidores@datasource.pt"
+HomeDirectory=$(pwd)
 
 # If the version file doesn't exist, then initiali the variable to 0.0
 # If the version file exists, then get the version number
 if [ ! -f /scripts/_dcc.v.sh ]; then
         VERSIONC="0.0"
 else
-        VERSIONC=$(cat /scripts/_dcc.v.sh)
+        VERSIONC=$(shyaml get-value versionNumber < "${HomeDirectory}"/_dcc.v.yaml)
 fi
 
 if [ "$VERSIONC" == "$VERSIONU" ]; then
         exit 0
 else
-        echo "${VERSIONU}" >/scripts/_dcc.v.sh
+        echo "versionNumber: ${VERSIONU}" >"${HomeDirectory}"/_dcc.v.yaml
 
         #***------------------------------------------------------****
         if ! /usr/bin/wget -O /scripts/_dcc.f__init__.sh.tmp \

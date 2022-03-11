@@ -1,0 +1,32 @@
+userdata:
+      user: p29
+      ftppass: RrnEoP1U5K
+
+backup:
+      destino1: /vol_raid10/volraid10/linux/P29-S8/
+      destino2: /backups/cpbackup/
+      ###- Especial para a funcao BACKUPnas2 -###
+      backupgeral1: /backups/cpbackup/daily/
+      ###- Especial para a funcao BACKUPdiario -###
+      dirbtmp: /backups/cpbackup/.daily
+      duplicity1: /vol_raid10/volraid10/linux/P29-S8/cpanel/
+      duplicity2: /vol_raid10/volraid10/linux/P29-S8/home/
+
+servers:
+      dias: 6
+      servidorip: 195.8.59.101
+      emailDeDestino: j@1aff.org
+
+script:
+      programanome: Datacenter Control Center
+      date: 11/03/2022
+      author: Joao da Cruz Leitao (j@1aff.org)
+      url: https://dcc.airjoni.xyz
+      copyright: Copyright (C) 2022
+      disclaimer: |-
+            This software is provided "as is" in the hope that it will be useful, but WITHOUT ANY WARRANTY, to the extent permitted by law;
+            without even the implied warranty of MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. IN NO EVENT SHALL THE AUTHOR OR
+            CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+            TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+            THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+            OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.

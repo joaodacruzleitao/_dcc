@@ -12,8 +12,8 @@ function LIMPAoQueEuQuiser {
         # usa-la para coisas rapidas a fazer em
         # todos os servidores
         #---------------------------------------
-        #_________________________
-        # Limpa bug do 0.conf
+
+        ###- Limpa bug do 0.conf
         if [ -f "/etc/nginx/vhosts/0.conf" ]; then
                 rm -f /etc/nginx/vhosts/0.conf
         fi

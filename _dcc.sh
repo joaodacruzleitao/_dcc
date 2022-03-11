@@ -1,36 +1,34 @@
 #!/usr/bin/env bash
-#Copyright (c) 2008-2012 http://datasource.pt/
+#Copyright (c) 2022 https://dcc.airjoni.xyz
 
 #
 # This program is free software: you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the Free
 # Software Foundation, either version 3 of the License, or (at your option)
 # any later version. See the included license.txt for futher details.
-#
-# PLEASE MODIFY VALUES BELOW THIS LINE ++++++++++++++++++++++++++++++++++++++
-# Note: Please enter y for yes or n for no.
+#***-------------------------------------------------------------------------------------------***
 
-source _dcc.config.sh
-. /scripts/_dcc.f__init__.sh
-. /scripts/_dcc.f__init1__.sh
-. /scripts/_dcc.f__init2__.sh
-. /scripts/_dcc.f_sistema_.sh
-. /scripts/_dcc.f_backups_.sh
-. /scripts/_dcc.f_seguranca_.sh
-. /scripts/_dcc.f_cpanel_.sh
-. /scripts/_dcc.f_nginx_.sh
-. /scripts/_dcc.f_varnish_.sh
-. /scripts/_dcc.f_bd_.sh
-. /scripts/_dcc.f_menus_.sh
+###- The FULL PATH of the script
+Script_FUll_Path=$(pwd)
+export Script_FUll_Path
 
-#***********************************************************************************************
-#* Directoria onde foi chamado o script
-#***********************************************************************************************
-DOFC=$(pwd)
+###- read all variables and configurations
+source "$Script_FUll_Path"/_dcc.f__init__.sh
+source "$Script_FUll_Path"/_dcc.f__init1__.sh
+source "$Script_FUll_Path"/_dcc.f__init2__.sh
+source "$Script_FUll_Path"/_dcc.f_sistema_.sh
+source "$Script_FUll_Path"/_dcc.f_backups_.sh
+source "$Script_FUll_Path"/_dcc.f_seguranca_.sh
+source "$Script_FUll_Path"/_dcc.f_cpanel_.sh
+source "$Script_FUll_Path"/_dcc.f_nginx_.sh
+source "$Script_FUll_Path"/_dcc.f_varnish_.sh
+source "$Script_FUll_Path"/_dcc.f_bd_.sh
+source "$Script_FUll_Path"/_dcc.f_menus_.sh
 
-#***********************************************************************************************
-#* CHECKING SOFTWARE INSTALLATION
-#***********************************************************************************************
+#***----------------------------------------------***
+#    Check if everything is installed correctly
+#    and clean all files that are not needed anymore
+#***----------------------------------------------***
 PMODULES
 GEOIP1st
 CPULIMIT
@@ -39,9 +37,9 @@ DIALOGx
 CHECK_DIRECTORIAS
 LIMPAoQueEuQuiser
 
-#***********************************************************************************************
-#* MAIN PROGRAM
-#***********************************************************************************************
+#***----------------------------------------------***
+#    The MAIN Program
+#***----------------------------------------------***
 case "$1" in
         sis_perl)
                 PMODULES
@@ -96,11 +94,11 @@ case "$1" in
                 exit 0
                 ;;
         nginx_vhosts)
-                NGINXvhostsFULLcache $2
+                NGINXvhostsFULLcache "$2"
                 exit 0
                 ;;
         nginx_vhost_hook | nginx_vh)
-                NGINXhooksGeraVhosts $2 $3 $4 $5
+                NGINXhooksGeraVhosts "$2" "$3" "$4" "$5"
                 exit 0
                 ;;
         nginx_ru)
@@ -108,15 +106,15 @@ case "$1" in
                 exit 0
                 ;;
         -12)
-                NGINXvhostsSingle $1 $2
+                NGINXvhostsSingle "$1" "$2"
                 exit 0
                 ;;
         varnish_vhosts)
-                VARNISHvhosts $1
+                VARNISHvhosts "$1"
                 exit 0
                 ;;
         mysql_o)
-                MYSQLoptimiza $1
+                MYSQLoptimiza "$1"
                 exit 0
                 ;;
         seg_clamav_u)
@@ -128,7 +126,7 @@ case "$1" in
                 exit 0
                 ;;
         virus_check)
-                antivirusCHECKsingle $1 $2
+                antivirusCHECKsingle "$1" "$2"
                 exit 0
                 ;;
         virus_check_full)
@@ -236,19 +234,19 @@ case "$1" in
                 exit 0
                 ;;
         sis_untar)
-                UnTarGZ ${DOFC} $1 $2
+                UnTarGZ ${Script_FUll_Path} $1 $2
                 exit 0
                 ;;
         sis_untargz)
-                UnTarGZ ${DOFC} $1 $2
+                UnTarGZ ${Script_FUll_Path} $1 $2
                 exit 0
                 ;;
         sis_tar)
-                TarGZ ${DOFC} $1 $2
+                TarGZ ${Script_FUll_Path} $1 $2
                 exit 0
                 ;;
         sis_targz)
-                TarGZ ${DOFC} $1 $2
+                TarGZ "${Script_FUll_Path}" "$1" "$2"
                 exit 0
                 ;;
         sis_ftpa)
@@ -313,7 +311,7 @@ case "$1" in
                 echo  "This is free software, and you are welcome to redistribute it "
                 echo  "under certain conditions."
                 echo
-                echo  " Usage: $(basename $0) OPTION"
+                echo  " Usage: $(basename "$0") OPTION"
                 echo
                 echo  " Options:"
                 echo  "  -m                         Para trabalhar apenas via MENU"
@@ -359,7 +357,7 @@ case "$1" in
                 echo  "  sis_ae                     Limpa o log error_log do apache"
                 echo  "  sis_am                     Limpa o log modsec_audit.log do apache"
                 echo  "  ----------------------------------------------------"
-                cecho "     CLOUDLINUX" $boldred
+                cecho "     CLOUDLINUX" "$boldred"
                 cecho  "    -------------------------" $boldred
                 echo  "  cloud_mg                   Instala MARIADB"
                 echo  "  ----------------------------------------------------"
@@ -429,4 +427,4 @@ case "$1" in
                 exit 0
                 ;;
 esac
-#***********************************************************************************************
+#***-------------------------------------------------------------------------------------------***
