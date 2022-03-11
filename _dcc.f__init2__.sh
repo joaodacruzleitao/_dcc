@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 #Copyright (c) 2008-2012 http://datasource.pt/ 
 
 #  *********************************************************************************************
@@ -14,7 +15,7 @@ function pause(){
 
 function ASK () {
 #---------------------------------------
-# Espera que se introduza no ecrã
+# Espera que se introduza no ecrï¿½
 # uma palvra ou frase
 #---------------------------------------
     keystroke=''
@@ -110,7 +111,7 @@ function DIALOGx {
         echo ".... [ INSTALLED ]"
         echo
     fi
-    
+
     if [ ! -e  "/usr/bin/lftp" ]; then
         clear
         echo
@@ -200,7 +201,7 @@ function PMODULES {
         do
                 echo "$i"
         done
-        echo "You can try installing these modules by running" 
+        echo "You can try installing these modules by running"
         echo "/scripts/perlinstaller <module_name>"
         echo "for each module name listed above."
         echo
@@ -214,7 +215,7 @@ function PMODULES {
 
 function CHECK_DIRECTORIAS {
 #---------------------------------------
-# Verifica directorias em falta e 
+# Verifica directorias em falta e
 # cria as necessarias
 #---------------------------------------
     clear
@@ -648,7 +649,7 @@ function GEOIP1st {
         replace "enabled = 1" "enabled = 0" -- /etc/yum.repos.d/rpmforge.repo
         sleep 10
     fi
-	
+
     #_________________________
     # CRIA USERS NO /etc/nignx/userdata/*
     if [ ! -d /etc/nginx/userdata ]; then
@@ -661,7 +662,7 @@ function GEOIP1st {
             then
                 if [ ! -f /etc/nginx/userdata/${GAIJO} ]; then
                     cat > "/etc/nginx/userdata/${GAIJO}" << EOF
---- 
+---
 Strict_Transport_Security: 1
 Caching: 1
 X_Frame_Options: 0
@@ -670,7 +671,7 @@ EOF
             fi
         done
     fi
-    
+
     #_________________________
 	# instalar o INCRON e o
     # instalar o EPEL Repository
@@ -695,7 +696,7 @@ EOF
             replace "enabled = 1" "enabled = 0" -- /etc/yum.repos.d/epel.repo
 			replace "enabled=1" "enabled=0" -- /etc/yum.repos.d/epel.repo
         fi
-			
+
         yum --disablerepo=\* --enablerepo=epel install incron -y
         chkconfig incrond on
         /etc/init.d/incrond start

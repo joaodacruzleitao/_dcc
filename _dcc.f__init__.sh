@@ -1,10 +1,11 @@
-#Copyright (c) 2008-2012 http://datasource.pt/ 
+#!/usr/bin/env bash
+#Copyright (c) 2008-2012 http://datasource.pt/
 
 ###################################################################################################################
 # VARIAVEIS > Begin
 ###
-DT=`date +"%d%m%y-%H%M%S"`
-SCRIPT_VERSION=$(cat /scripts/_dcc.v.sh)
+DT=$(date +"%d%m%y-%H%M%S")
+SCRIPT_VERSION=$(jq /scripts/_dcc.v.json)
 SCRIPT_DATE="31/08/2012"
 SCRIPT_AUTHOR='Joao Leitao (j@xanubi.com)'
 SCRIPT_URL='http://www.datasource.pt'

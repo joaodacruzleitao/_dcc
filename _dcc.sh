@@ -1,5 +1,5 @@
-#!/bin/bash
-#Copyright (c) 2008-2012 http://datasource.pt/ 
+#!/usr/bin/env bash
+#Copyright (c) 2008-2012 http://datasource.pt/
 
 #
 # This program is free software: you can redistribute it and/or modify it
@@ -10,7 +10,7 @@
 # PLEASE MODIFY VALUES BELOW THIS LINE ++++++++++++++++++++++++++++++++++++++
 # Note: Please enter y for yes or n for no.
 
-. /scripts/_dcc.config.sh
+source _dcc.config.sh
 . /scripts/_dcc.f__init__.sh
 . /scripts/_dcc.f__init1__.sh
 . /scripts/_dcc.f__init2__.sh
@@ -42,7 +42,7 @@ LIMPAoQueEuQuiser
 #***********************************************************************************************
 #* MAIN PROGRAM
 #***********************************************************************************************
-case "$1" in 
+case "$1" in
     sis_perl)
         PMODULES
         exit 0
@@ -52,15 +52,15 @@ case "$1" in
         exit 0
         ;;
     backup_user)
-        BACKUP $1 $2
+        BACKUP "$1" "$2"
         exit 0
         ;;
     -4)
-        BACKUPnas1 $1 $2 $3
+        BACKUPnas1 "$1" "$2" "$3"
         exit 0
         ;;
     -5)
-        BACKUPdiario $1
+        BACKUPdiario "$1"
         exit 0
         ;;
     backup_cp_c)
@@ -68,15 +68,15 @@ case "$1" in
         exit 0
         ;;
     backup_cp_nfs)
-        BACKUPCPanelNFSCopy $1 $2
+        BACKUPCPanelNFSCopy "$1" "$2"
         exit 0
         ;;
     sis_puser)
-        CORRIGE $1 $2
+        CORRIGE "$1" "$2"
         exit 0
         ;;
     sis_puser_dir)
-        CORRIGE2 $1 $2 $3
+        CORRIGE2 "$1" "$2" "$3"
         exit 0
         ;;
     sis_ptodos)
@@ -84,7 +84,7 @@ case "$1" in
         exit 0
         ;;
     sis_php_del)
-        PHPfcgiKillOrphan $1
+        PHPfcgiKillOrphan "$1"
         exit 0
         ;;
     nginx_i)
@@ -99,7 +99,7 @@ case "$1" in
         NGINXvhostsFULLcache $2
         exit 0
         ;;
-    nginx_vhost_hook|nginx_vh)
+    nginx_vhost_hook | nginx_vh)
         NGINXhooksGeraVhosts $2 $3 $4 $5
         exit 0
         ;;
@@ -236,7 +236,7 @@ case "$1" in
         exit 0
         ;;
     sis_untar)
-        UnTarGZ ${DOFC} $1 $2 
+        UnTarGZ ${DOFC} $1 $2
         exit 0
         ;;
     sis_untargz)
@@ -244,7 +244,7 @@ case "$1" in
         exit 0
         ;;
     sis_tar)
-        TarGZ ${DOFC} $1 $2 
+        TarGZ ${DOFC} $1 $2
         exit 0
         ;;
     sis_targz)
@@ -252,31 +252,31 @@ case "$1" in
         exit 0
         ;;
     sis_ftpa)
-		FtpVerActividade
+        FtpVerActividade
         exit 0
         ;;
     sis_ac)
-		apache:limpa_logs_todos
+        apache:limpa_logs_todos
         exit 0
         ;;
     sis_ae)
-		apache:limpa_logs_error_log
+        apache:limpa_logs_error_log
         exit 0
         ;;
     sis_am)
-		apache:limpa_logs_modsec_audit
+        apache:limpa_logs_modsec_audit
         exit 0
         ;;
     sis_csf)
-		configserver::csf_install
+        configserver::csf_install
         exit 0
         ;;
     sis_mq)
-		configserver::mail_queues_install
+        configserver::mail_queues_install
         exit 0
         ;;
     sis_mm)
-		configserver::mail_manager_install
+        configserver::mail_manager_install
         exit 0
         ;;
     sis_msm)
@@ -295,11 +295,11 @@ case "$1" in
         cloudlinux:mysql-governor
         exit 0
         ;;
-    -m|menu)
+    -m | menu)
         #########################################################
         # MENU
         #########################################################
-		MENUprincipal
+        MENUprincipal
         #########################################################
         ;;
     *)
@@ -313,7 +313,7 @@ case "$1" in
         echo  "This is free software, and you are welcome to redistribute it "
         echo  "under certain conditions."
         echo
-        echo  " Usage: `basename $0` OPTION"
+        echo  " Usage: $(basename $0) OPTION"
         echo
         echo  " Options:"
         echo  "  -m                         Para trabalhar apenas via MENU"
