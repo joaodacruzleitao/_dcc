@@ -1,0 +1,13 @@
+#!/bin/bash
+CPANELUSER=`echo $1`
+
+if [[ $CPANELUSER == *.lock || $CPANELUSER == .* ]];then
+	echo "nao faz nada" >> /dev/null 2>&1
+else
+(
+    flock -x -w 300 500 
+    /scripts/_dcc.sh nginx_vhost_hook $CPANELUSER >> /dev/null 2>&1
+) 500>/tmp/$CPANELUSER.lock
+    rm -f /tmp/$CPANELUSER.lock >> /dev/null 2>&1
+    /etc/init.d/nginx reload >> /dev/null 2>&1
+fi

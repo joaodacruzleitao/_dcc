@@ -1,0 +1,21 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+
+use Data::Dumper;
+use XML::Simple;
+
+my $xml;
+
+while (<STDIN>) {
+        $xml .= $_;
+}
+
+my $xml_hashed = XMLin($xml);
+my $parque = "$xml_hashed->{'CPDATA'}->{'USER'}";
+chomp $parque;
+
+system("echo '------------' >> /var/log/nginx/history.log 2>&1");
+system("echo 'adding PARK -> ' " . $parque. " >> /var/log/nginx/history.log 2>&1");
+system ("/scripts/_dcc.sh nginx_vhost_hook $parque >> /dev/null 2>&1");
+system ("/etc/init.d/nginx reload >> /var/log/nginx/history.log 2>&1");

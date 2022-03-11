@@ -1,0 +1,7 @@
+#!/bin/bash
+
+/scripts/prekillacct.cagefs.bak "$@"
+
+# CloudLinux Stuff
+/usr/share/l.v.e-manager/cpanel/hooks/l.v.e-manager_prekillacct_hook.pl "$@"   #l.v.e-manager
+/usr/share/cagefs-plugins/hooks/terminate_cagefs_account.sh "$@"   # #CageFS

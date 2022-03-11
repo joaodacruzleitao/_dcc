@@ -1,0 +1,29 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+
+use XML::Simple;
+use Data::Dumper;
+
+my $xml;
+
+while (<STDIN>) {
+        $xml .= $_;
+}
+
+#open my $FH, '>', '/root/1add.txt';
+#print $FH $xml;
+#print $FH " --- ";
+#print $FH "/etc/nginx/vhosts/" . $domain. ".conf";
+#print $FH " ***";
+#close $FH;
+
+my $xml_hashed = XMLin($xml);
+my $subdomain = "$xml_hashed->{'CPDATA'}->{'USER'}";
+chomp $subdomain;
+
+system("echo '------------' >> /var/log/nginx/history.log 2>&1");
+system("echo 'adding SUBDOMAIN -> ' " . $subdomain. " >> /var/log/nginx/history.log 2>&1");
+system ("/scripts/_dcc.sh nginx_vhost_hook $subdomain >> /dev/null 2>&1");
+system ("/etc/init.d/nginx reload >> /var/log/nginx/history.log 2>&1");
+

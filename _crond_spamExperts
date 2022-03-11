@@ -1,0 +1,40 @@
+#!/bin/bash
+## THIS SCRIPT IS PROVIDED AS-IS NO WARRANTY IS GIVEN ON PROPER OPERATION.
+## USE AT YOUR OWN RISK!
+#
+## Version 1.1 - 14-07-2012
+
+#CURRENT_IPS=`cat /etc/trustedmailhosts`
+EXPIRED_IPS=`host delivery_expired.antispamcloud.com | grep '[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}' | awk {'print $4'} | sort`
+SE_DELIVERY_IPS=`host delivery.antispamcloud.com | grep '[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}' | awk {'print $4'} | sort`
+
+# Filter out the expired IP's from the current list
+#CLEAN_IPS=""
+#for ip in $CURRENT_IPS
+#do
+#        if [[ !  `echo $EXPIRED_IPS | grep $ip` ]];
+#        then
+#                CLEAN_IPS=`echo $CLEAN_IPS $ip`
+#        fi
+#done
+
+# Combine the current list with the new IP's, make it unique+sorted and finally save the file.
+echo "195.8.58.0/24" > /etc/trustedmailhosts
+echo "195.8.59.0/24" >> /etc/trustedmailhosts
+echo "5.9.105.136" >> /etc/trustedmailhosts
+echo "144.76.9.142" >> /etc/trustedmailhosts
+echo "5.9.148.113" >> /etc/trustedmailhosts
+echo "144.76.59.39" >> /etc/trustedmailhosts
+echo "144.76.63.13" >> /etc/trustedmailhosts
+echo "144.76.164.182" >> /etc/trustedmailhosts
+echo "176.9.127.14" >> /etc/trustedmailhosts
+echo "176.9.184.245" >> /etc/trustedmailhosts
+echo "5.9.24.73" >> /etc/trustedmailhosts
+echo "176.9.70.35" >> /etc/trustedmailhosts
+echo "46.4.23.195" >> /etc/trustedmailhosts
+echo "46.4.71.107" >> /etc/trustedmailhosts
+echo "188.40.105.194" >> /etc/trustedmailhosts
+echo "188.40.138.81" >> /etc/trustedmailhosts
+#echo $CLEAN_IPS $SE_DELIVERY_IPS | xargs -n 1 | sort | uniq | xargs -n 1 >> /etc/trustedmailhosts
+echo $SE_DELIVERY_IPS | xargs -n 1 | sort | uniq | xargs -n 1 >> /etc/trustedmailhosts
+cat /etc/trustedmailhosts > /etc/skipsmtpcheckhosts

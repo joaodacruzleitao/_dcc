@@ -1,0 +1,34 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+
+use XML::Simple;
+use Data::Dumper;
+
+my $tmp;
+my %OPTS = @ARGV;
+my $username = "$OPTS{'user'}";
+chomp $username;
+my $dominio =`/scripts/_dccAPI.pl --guf $username`;
+
+##################
+# Just For tests
+# ------------------
+#my $dominias =`/scripts/_dccAPI.pl --guf $username >/root/2.txt`;
+#open my $FH, '>', '/root/1.txt';
+#print $FH Dumper(\%OPTS);
+#print $FH " *** ";
+#print $FH " $username ";
+#print $FH " *** ";
+#print $FH " $dominio ";
+#close $FH;
+#######################
+
+while($dominio =~ /([^\n]+)\n?/g){
+	$tmp = $1;
+	$tmp =~ s/\n//g;
+	system("rm -f /etc/nginx/vhosts/" . $tmp. ".conf >> /dev/null 2>&1");
+	system("rm -f /etc/nginx/vhosts/" . $tmp. "_.inc >> /dev/null 2>&1");
+	system("rm -f /etc/nginx/vhosts/" . $tmp. "_anti-hacker_.inc >> /dev/null 2>&1");
+}
+system ("/etc/init.d/nginx reload >> /dev/null 2>&1");

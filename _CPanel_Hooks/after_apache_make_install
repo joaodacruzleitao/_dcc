@@ -1,0 +1,5 @@
+#!/bin/bash
+/scripts/_dcc.sh nginx_cflare
+/usr/share/lve/modlscapi/hooks/lsapi.hook   #mod_lsapi Version 0.1beta mod_lsapi module installation
+/usr/share/lve/modlscapi/hooks/cpanelpostupcp.hook   #mod_lsapi Version 0.1beta Rebuild Apache config hook
+

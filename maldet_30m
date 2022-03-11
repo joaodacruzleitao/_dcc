@@ -1,0 +1,127 @@
+#!/bin/bash
+#
+##
+# Linux Malware Detect v1.4.2
+#             (C) 2002-2013, R-fx Networks <proj@r-fx.org>
+#             (C) 2013, Ryan MacDonald <ryan@r-fx.org>
+# inotifywait (C) 2007, Rohan McGovern <rohan@mcgovern.id.au>
+# This program may be freely redistributed under the terms of the GNU GPL v2
+##
+#
+ver=1.4.2
+inspath=/usr/local/maldetect
+cnf=$inspath/conf.maldet
+intcnf=$inspath/internals.conf
+datestamp=`date +"%m%d%y-%H%M"`
+rver=$ver
+
+source $cnf
+source $intcnf
+
+if [ ! "$(whoami)" == "root" ]; then
+	if [ -z "$public_scan" ] || [ "$public_scan" == "0" ]; then
+		args="$@"
+		if [[ "$args" =~ "modsec" ]]; then
+			echo "1 maldet: OK"
+			exit
+		fi
+		header
+		echo "public scanning is currently disabled, please contact your system administrator to enable public_scan in conf.maldet."
+		exit
+	fi
+	pub=1
+	user=`whoami`
+        quardir=$inspath/pub/$user/quar
+        sessdir=$inspath/pub/$user/sess
+        tmpdir=$inspath/pub/$user/tmp
+        logf=$inspath/pub/$user/event_log
+	mkdir -p $quardir >> /dev/null 2>&1
+	mkdir -p $sessdir >> /dev/null 2>&1
+	mkdir -p $tmpdir >> /dev/null 2>&1
+	touch $logf
+else
+	echo $ver > $lmd_verf
+fi
+
+if [ -z "$wget" ]; then
+	header
+	echo "could not find required binary wget, aborting."
+	exit 1	
+fi
+
+if [ -z "$md5sum" ]; then
+	header
+	echo "could not find required binary md5sum, aborting."
+	exit 1	
+fi
+
+if [ -z "$od" ]; then
+	header
+	echo "could not find required binary od, aborting."
+	exit 1	
+fi
+
+if [ -z "$find" ]; then
+	header
+	echo "could not find required binary find, aborting."
+	exit 1	
+fi
+
+if [ -z "$perl" ]; then
+	header
+	echo "could not find required binary perl, aborting."
+	exit 1	
+fi
+
+if [ -z "$EDITOR" ]; then
+	defedit=`which nano 2> /dev/null`
+	if [ -z "$defedit" ]; then
+		EDITOR=vi
+	else
+		EDITOR=nano
+	fi
+fi
+
+if [ "$hex_fifo_scan" == "1" ]; then
+ mkfifo=`which mkfifo 2> /dev/null`
+ if [ -f "$mkfifo" ] && [ ! -p "$hex_fifo" ]; then
+	$mkfifo -m 666 $hex_fifo
+ fi
+fi
+
+tot_files=`$wc -l $tmpdir/.daily.monitor.alert | awk '{print$1}'`
+tmpf="/usr/local/maldetect/tmp/.email_jonix.tmp"
+email_subj="$email_subj :: INODES 30m Check"
+envia_email="0"
+
+if [ "$tot_files" == "" ]
+then
+ envia_email="0"
+elif [ "$tot_files" == "0" ]
+then
+ envia_email="0"
+else
+ envia_email="1"
+fi
+
+if [ "$envia_email" == "1" ]
+then
+ cat > "/usr/local/maldetect/tmp/.email_jonix.tmp" << EOF
+malware detect INODES monitor report for $(hostname):
+TIME: $(date +"%b %e %H:%M:%S %z")
+TOTAL FILES: $tot_files
+
+FILE HIT LIST:
+$(cat /usr/local/maldetect/tmp/.daily.monitor.alert)
+===============================================
+Linux Malware Detect v$ver < proj@rfxn.com >
+EOF
+
+ cat /usr/local/maldetect/tmp/.email_jonix.tmp | $mail -s "$email_subj" $email_addr
+ echo "{alert} sent INODE alert to $email_addr"
+
+ rm -f /usr/local/maldetect/tmp/.email_jonix.tmp
+fi
+
+/usr/local/maldetect/maldet --alert-daily
+exit 0

@@ -1,0 +1,42 @@
+#!/usr/local/cpanel/3rdparty/bin/perl
+
+use strict;
+use warnings;
+
+use IO::Select;
+use JSON::Syck;
+use Data::Dumper;
+
+my $tmp;
+my $username = get_utilizador();
+chomp $username;
+my $dominio =`/scripts/_dccAPI.pl --guf $username`;
+
+while($dominio =~ /([^\n]+)\n?/g){
+	$tmp = $1;
+	$tmp =~ s/\n//g;
+	system("rm -f /etc/nginx/vhosts/" . $tmp. ".conf");
+	system("rm -f /etc/nginx/vhosts/" . $tmp. "_CONFIG__.inc");
+	system("rm -f /etc/nginx/vhosts/" . $tmp. "_SSL.conf");
+	system("rm -f /etc/nginx/vhosts/" . $tmp. "_SSL_CONFIG__.inc");
+
+	system("rm -f /etc/nginx/userdata/" . $username);
+}
+system("/etc/init.d/nginx reload >/dev/null 2>&1");
+
+
+sub get_utilizador {
+    my $raw_data   = '';
+    my $input_data = {};
+    my $selects    = IO::Select->new();
+    $selects->add( \*STDIN );
+    if ( $selects->can_read(.1) ) {
+        while (<STDIN>) {
+            $raw_data .= $_;
+        }
+        $input_data = JSON::Syck::Load($raw_data);
+    }
+    my $username = $input_data->{'data'}->{'user'};
+    return $username;
+}
+1;

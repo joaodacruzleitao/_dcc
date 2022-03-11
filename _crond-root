@@ -1,0 +1,73 @@
+SHELL=/bin/bash
+PATH=/sbin:/bin:/usr/sbin:/usr/bin
+MAILTO=root
+HOME=/
+
+# For details see man 4 crontabs
+
+# Example of job definition:
+# .---------------- minute (0 - 59)
+# |  .------------- hour (0 - 23)
+# |  |  .---------- day of month (1 - 31)
+# |  |  |  .------- month (1 - 12) OR jan,feb,mar,apr ...
+# |  |  |  |  .---- day of week (0 - 6) (Sunday=0 or 7) OR sun,mon,tue,wed,thu,fri,sat
+# |  |  |  |  |
+# *  *  *  *  * user-name command to be executed
+#
+# EMAIL: Actualiza IPs do SpamExperts
+*/10 * * * * root /scripts/_crond_spamExperts
+#
+# Manutencao do /tmp e do /tmp/.nginx
+###SUSPENSO### 0 */1 * * * root /scripts/_nginx_manutencao.sh > /dev/null 2>&1
+###SUSPENSO### 15 7,21 * * * root /scripts/_tmp_manutencao.sh > /dev/null 2>&1
+#
+# Verifica Ficheiro mudados a cada 30 minutos
+###SUSPENSO### */30 * * * * root /usr/local/maldetect/maldet_30m >> /dev/null 2>&1
+#
+# Elimina PHP FCGI Orphan Processos
+* * * * * root /usr/bin/d- sis_php_del > /dev/null 2>&1
+#
+# Limpa temporários do /tmp
+*/55 * * * * root /usr/bin/d- sis_tmp > /dev/null 2>&1
+#
+# Download do GEOIP
+0 14 10-15 * 1 root /usr/bin/d- sis_geoip_u > /dev/null 2>&1
+#
+# ModSecurity Update Rules
+*/10 * * * * root /usr/bin/d- modsec_u > /dev/null 2>&1
+#
+# ModSecurity Apagar Logs Antigos
+0 8 * * * root /usr/bin/d- modsec_logs > /dev/null 2>&1
+#
+# MYSQL: Optimiza Completo
+0 22 * * * root /usr/bin/d- mysql_o
+#
+# ANTIVIRUS: ClamAV Update no Central b83
+10 23 * * * root /usr/bin/d- seg_clamav_u
+#
+# ANTIVIRUS: ClamAV Update nos Servidores Clientes
+33 21 * * * root /usr/bin/d- seg_clamav_c
+#
+# ANTIVIRUS: Verificacao diaria de virus, ficheiros maximo de 2 dias
+10 4 * * * root /usr/bin/d- virus_check_daily
+#
+# ANTIVIRUS: MalDet Update
+###SUSPENSO### */5 * * * * root /usr/bin/d- seg_maldet_u > /dev/null 2>&1
+#
+# ANTIVIRUS: Update DIARIO do INOTIFY do Maldet
+###SUSPENSO### 45 7 * * * root /usr/bin/d- seg_maldet_i > /dev/null 2>&1
+#
+# Verifica os INODE Abusers
+###SUSPENSO### 45 22 * * * root /usr/bin/d- sis_inode  > /dev/null 2>&1
+#
+# Verifica se CPanel BACKUPS estao encravados
+30 10 * * * root /usr/bin/d- backup_cp_c  >/dev/null 2>&1
+#
+# Envia Actividade de FTP por email
+0 * * * * root /usr/bin/d- sis_ftpa  > /dev/null 2>&1
+#
+# Envia Actividade de Ficheiros por email
+###SUSPENSO### 0 * * * * root /usr/bin/d- sis_filesa  > /dev/null 2>&1
+#
+# UPDATE /scripts/_dcc.sh
+*/5 * * * * root  /usr/bin/dU-  > /dev/null 2>&1

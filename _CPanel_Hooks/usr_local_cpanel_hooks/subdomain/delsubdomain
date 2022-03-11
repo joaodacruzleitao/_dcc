@@ -1,0 +1,33 @@
+#!/usr/bin/perl
+
+BEGIN { unshift @INC, '/usr/local/cpanel'; }
+
+use strict;
+use warnings;
+
+use XML::Simple;
+use Cpanel::WildcardDomain      ();
+use Encode;
+my $xml;
+
+while (<STDIN>) {
+       $xml .= $_;
+}
+
+#open my $FH, '>', '/root/1del.xml';
+#print $FH $xml;
+#print $FH " --- ";
+#print $FH "/etc/nginx/vhosts/" . $domain. ".conf";
+#print $FH " ***";
+#close $FH;
+
+my $xml_hashed = XMLin(decode('iso-8859-1', $xml));
+my $domain =  "$xml_hashed->{'cpanelevent'}->{'params'}->{'domain'}";
+$domain =~ s/_/./g;
+
+system("echo '------------' >> /var/log/nginx/history.log 2>&1");
+system("echo 'deleting SUBDOMAIN -> ' " . $domain. " >> /var/log/nginx/history.log 2>&1");
+system("rm -f /etc/nginx/vhosts/" . $domain. ".conf >> /var/log/nginx/history.log 2>&1");
+system("rm -f /etc/nginx/vhosts/" . $domain. "_CONFIG__.inc >> /var/log/nginx/history.log 2>&1");
+system("rm -f /etc/nginx/vhosts/" . $domain. "_SSL.conf >> /var/log/nginx/history.log 2>&1");
+system("rm -f /etc/nginx/vhosts/" . $domain. "_SSL_CONFIG__.inc >> /var/log/nginx/history.log 2>&1");

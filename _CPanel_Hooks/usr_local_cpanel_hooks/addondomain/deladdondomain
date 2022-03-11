@@ -1,0 +1,22 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use Data::Dumper;
+use XML::Simple;
+use Encode;
+my $xml;
+
+while (<STDIN>) {
+       $xml .= $_;
+}
+
+my $xml_hashed = XMLin(decode('iso-8859-1', $xml));
+my $domain =  "$xml_hashed->{'cpanelevent'}->{'params'}->{'subdomain'}";
+$domain =~ s/_/./g;
+
+system("echo '------------' >> /var/log/nginx/history.log 2>&1");
+system("echo 'deleting ADDon DOMAIN -> ' " . $domain. " >> /var/log/nginx/history.log 2>&1");
+system("rm -f /etc/nginx/vhosts/" . $domain. ".conf >> /var/log/nginx/history.log 2>&1");
+system("rm -f /etc/nginx/vhosts/" . $domain. "_CONFIG__.inc >> /var/log/nginx/history.log 2>&1");
+system("rm -f /etc/nginx/vhosts/" . $domain. "_SSL.conf >> /var/log/nginx/history.log 2>&1");
+system("rm -f /etc/nginx/vhosts/" . $domain. "_SSL_CONFIG__.inc >> /var/log/nginx/history.log 2>&1");

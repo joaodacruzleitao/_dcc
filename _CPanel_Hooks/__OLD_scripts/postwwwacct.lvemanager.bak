@@ -1,0 +1,24 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+
+use XML::Simple;
+use Data::Dumper;
+
+my %OPTS = @ARGV;
+my $utilizador = "$OPTS{'user'}";
+my $dominio = "$OPTS{'domain'}";
+chomp $utilizador;
+##################
+# Just For tests
+# ------------------
+#open my $FH, '>', '/root/1.txt';
+#print $FH Dumper(\%OPTS);
+#print $FH " *** ";
+#print $FH " $utilizador ";
+#print $FH " *** ";
+#print $FH " $dominio ";
+#close $FH;
+##################
+system ("/scripts/_dcc.sh nginx_vhost_hook $utilizador >> /dev/null 2>&1");
+system ("/etc/init.d/nginx reload >> /dev/null 2>&1");

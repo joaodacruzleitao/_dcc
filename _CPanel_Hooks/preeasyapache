@@ -1,0 +1,3 @@
+#!/bin/bash
+
+echo "">/usr/local/apache/conf/includes/pre_main_2.conf
