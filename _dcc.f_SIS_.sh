@@ -9,6 +9,12 @@ function CORRIGE {
         #---------------------------------------
         # Corrige Permissoes de um Utilizador
         #---------------------------------------
+        local VerificA
+        local USERN
+        local DOMAIN
+        local MENUDATA
+        local RUSERS
+
         clear
         echo
         cecho "Corrigindo Permissoes para o Utilizador ..." "$boldyellow"
@@ -18,12 +24,12 @@ function CORRIGE {
                 if [ -z "$2" ]
                 then
                         echo "E preciso especificar o USERNAME, assim:"
-                        echo "Exemplo: $(basename "$0") corrige USERNAME"
-                        echo "Exemplo: $(basename "$0") corrige jonix "
+                        echo "Exemplo: ${ScriptTnamE} corrige USERNAME"
+                        echo "Exemplo: ${ScriptTnamE} corrige jonix "
                         echo
                         exit 0
                 fi
-                USERN=$2
+                USERN="$2"
                 #--
                 echo "1) Corrigindo permissoes no public_html"
                 chown -R "${USERN}":"${USERN}" /home/"${USERN}"/public_html/
@@ -57,8 +63,8 @@ function CORRIGE {
                         MENUprincipal
                 fi
                 ###- VERIFICAR SE USER JA EXISTE NO SISTEMA
-                verifica=$( (cut -d : -f 1 | grep -i "^$USERN$") < /etc/passwd)
-                if [ -z "$verifica" ];
+                VerificA=$( (cut -d : -f 1 | grep -i "^$USERN$") < /etc/passwd)
+                if [ -z "$VerificA" ];
                 then
                         dialog --backtitle "$NOMEFINAL" --title "ATENCAO" --msgbox "Utilizador nao existe!!!" 3 60
                         MENUprincipal
@@ -88,25 +94,28 @@ function CORRIGE2 {
         # Corrige Permissoes de um directorio
         # de um Utilizador
         #---------------------------------------
+        local USERN
+        local DIRECTORIO
+        local VerificA
         clear
         echo
-        cecho "Corrigindo Permissoes Utilizado em Directorio ..." $boldyellow
+        cecho "Corrigindo Permissoes Utilizado em Directorio ..." "$boldyellow"
         echo
         if [ "$1" == "sis_puser_dir" ]
         then
                 if [ -z "$2" ]
                 then
                         echo "E preciso especificar o USERNAME e o DIRECTORIO, assim:"
-                        echo "Exemplo: `basename $0` corrige USERNAME DIRECTORIO"
-                        echo "Exemplo: `basename $0` corrige jonix public_html/cache"
+                        echo "Exemplo: ${ScriptTnamE} corrige USERNAME DIRECTORIO"
+                        echo "Exemplo: ${ScriptTnamE} corrige jonix public_html/cache"
                         echo
                         exit 0
                 fi
                 if [ -z "$3" ]
                 then
                         echo "E preciso especificar o USERNAME e o DIRECTORIO, assim:"
-                        echo "Exemplo: `basename $0` corrige USERNAME DIRECTORIO"
-                        echo "Exemplo: `basename $0` corrige jonix public_html/cache"
+                        echo "Exemplo: ${ScriptTnamE} corrige USERNAME DIRECTORIO"
+                        echo "Exemplo: ${ScriptTnamE} corrige jonix public_html/cache"
                         echo
                         exit 0
                 fi
@@ -114,18 +123,18 @@ function CORRIGE2 {
                 DIRECTORIO=$3
                 #--
                 echo "1) Corrigindo permissoes no /home/$USERN/$DIRECTORIO/"
-                chown -R $USERN:$USERN ""/home"/"$USERN"/"$DIRECTORIO"/"
+                chown -R "$USERN":"$USERN" /home/"$USERN"/"$DIRECTORIO"/
                 #--
                 echo "2) Corrigindo permissoes nos ficheiros e directorias"
-                find /home/$USERN/$DIRECTORIO/ -type d -exec chmod 755 {} \;
-                find /home/$USERN/$DIRECTORIO/ -type f -exec chmod 644 {} \;
+                find /home/"$USERN"/"$DIRECTORIO"/ -type d -exec chmod 755 {} \;
+                find /home/"$USERN"/"$DIRECTORIO"/ -type f -exec chmod 644 {} \;
                 #--
                 echo "3) Corrigindo permissoes Finais"
-                chmod 750 ""/home"/"$USERN"/public_html/"
+                chmod 750 /home/"$USERN"/public_html/
                 echo "4) permissoes corrigidas!"
                 #--
                 echo
-                echo -e "... $GREEN[ DONE ]$RESET"
+                echo -e "... ${GREEN}[ DONE ]${RESET}"
                 echo
                 echo "---------------------------"
                 pause "Pressione [Enter] para Continuar..."
@@ -143,7 +152,7 @@ function CORRIGE2 {
                         )
 
                 # VERIFICAR SE USER J� EXISTE NO SISTEMA
-                verifica=`cat /etc/passwd | cut -d : -f 1 | grep -i ^$USERN$`
+                VerificA=$( (cut -d : -f 1 | grep -i "^$USERN$") < /etc/passwd)
                 if [ -z "$verifica" ];
                 then
                         dialog --backtitle "$NOMEFINAL" --title "ATENCAO" --msgbox "Utilizador nao existe!!!" 6 60
@@ -167,17 +176,17 @@ function CORRIGE2 {
                         MENUprincipal
                 fi
                 #--
-                dialog --backtitle "$NOMEFINAL" --title "FASE #1" --infobox "Corrigindo permissoes no /home/$USERN/$DIRECTORIO" 5 60
-                chown -R $USERN:$USERN ""/home"/"$USERN"/"$DIRECTORIO"/"
+                dialog --backtitle "$NOMEFINAL" --title "FASE #1" --infobox "Corrigindo permissoes no /home/${USERN}/${DIRECTORIO}" 5 60
+                chown -R "${USERN}":"${USERN}" /home/"$USERN"/"$DIRECTORIO"/
                 sleep 2
                 #--
                 dialog --backtitle "$NOMEFINAL" --title "FASE #2" --infobox "Corrigindo permissoes nos ficheiros e directorias" 5 60
-                find /home/$USERN/$DIRECTORIO/ -type d -exec chmod 755 {} \;
-                find /home/$USERN/$DIRECTORIO/ -type f -exec chmod 644 {} \;
+                find /home/"${USERN}"/"$DIRECTORIO"/ -type d -exec chmod 755 {} \;
+                find /home/"$USERN"/"$DIRECTORIO"/ -type f -exec chmod 644 {} \;
                 sleep 2
                 #--
                 dialog --backtitle "$NOMEFINAL" --title "FASE #3" --infobox "Corrigindo permissoes Finais" 5 60
-                chmod 750 ""/home"/"$USERN"/public_html/"
+                chmod 750 /home/"$USERN"/public_html/
                 sleep 2
                 #--
                 dialog --backtitle "$NOMEFINAL" --title "FIM" --msgbox "Permissoes Corrigidas!!" 6 60
@@ -190,31 +199,31 @@ function CorrigeTodos {
         # Corrige Permissoes de todos
         # os utilizadores
         #---------------------------------------
+        local user
+
         clear
         echo
-        cecho "Corrigindo Permissoes TODOS Utilizadores ..." $boldyellow
+        cecho "Corrigindo Permissoes TODOS Utilizadores ..." "$boldyellow"
         echo
 
-        cd /var/cpanel/users
+        cd /var/cpanel/users || { LIB::cd_error_message "/var/cpanel/users"; return; }
         for user in *
         do
-                # Correct the owner of the files and directories
-                ################
-                chown -R $user:$user /home/$user/public_html/
-                chown $user:nobody /home/$user/public_html/
+                ###- Correct the owner of the files and directories
+                chown -R "$user":"$user" /home/"$user"/public_html/
+                chown "$user":nobody /home/"$user"/public_html/
 
-                # Correct the permissions of the files and directories
-                ################
-                find /home/$user/public_html/ -type d -exec chmod 755 {} \;
-                find /home/$user/public_html/ -type f -exec chmod 644 {} \;
-                find /home/$user/public_html/ -name 'configuration.php' -type f -exec chmod 444 {} \;
-                find /home/$user/public_html/ -name 'wp-config.php' -type f -exec chmod 444 {} \;
-                find /home/$user/public_html/ -name 'index.php' -type f -exec chmod 444 {} \;
-                find /home/$user/public_html/ -name '.htaccess' -type f -exec chmod 444 {} \;
+                ###- Correct the permissions of the files and directories
+                find /home/"$user"/public_html/ -type d -exec chmod 755 {} \;
+                find /home/"$user"/public_html/ -type f -exec chmod 644 {} \;
+                find /home/"$user"/public_html/ -name 'configuration.php' -type f -exec chmod 444 {} \;
+                find /home/"$user"/public_html/ -name 'wp-config.php' -type f -exec chmod 444 {} \;
+                find /home/"$user"/public_html/ -name 'index.php' -type f -exec chmod 444 {} \;
+                find /home/"$user"/public_html/ -name '.htaccess' -type f -exec chmod 444 {} \;
 
                 # Correct the owner of the public_html directory
                 ################
-                chmod 750 /home/$user/public_html/
+                chmod 750 /home/"$user"/public_html/
         done
 
         echo
@@ -228,13 +237,11 @@ function PHPfcgiKillOrphan {
         # Mata os processod de PHP FastCGI que
         # ficaram orfaos e so oupam memoria
         #---------------------------------------
+        /bin/ps -Ao"command,pid,ppid"|/bin/grep ' 1$'|/bin/grep /php|/bin/awk '{ print $3; }'|/usr/bin/xargs kill -9 > /dev/null 2>&1
+        /bin/ps auxwwwf | /bin/grep '[0-9] /usr/bin/php' | /bin/awk '{ print $2 }' | xargs kill -9 > /dev/null 2>&1
         if [ "$1" == "sis_php_del" ]; then
-                #        /bin/ps -Ao"command,pid,ppid"|/bin/grep ' 1$'|/bin/grep /php|/bin/awk '{ print $3; }'|/usr/bin/xargs kill -9
-                /bin/ps auxwwwf | /bin/grep '[0-9] /usr/bin/php' | /bin/awk '{ print $2 }' | xargs kill -9
-                #>> /dev/null 2>&1
                 exit 0
         else
-                /bin/ps -Ao"command,pid,ppid"|/bin/grep ' 1$'|/bin/grep /php|/bin/awk '{ print $3; }'|/usr/bin/xargs kill -9 >> /dev/null 2>&1
                 dialog --backtitle "$NOMEFINAL" --title "PHP Process Kill" --msgbox "Processos PHP Eliminados!!!" 6 60
                 MENUprincipal
         fi
@@ -248,23 +255,25 @@ function TarGZ {
         #---------------------------------------
         clear
         if [ -z "$2" ]; then
-                echo "� preciso especificar o nome do FICHEIRO, assim:"
-                echo "Exemplo: `basename $0` sis_tar ficheiro.tar"
-                echo "Exemplo: `basename $0` sis_targz ficheiro.tar.gz"
+                echo "You need to specify the name of FILE:"
+                echo "Example .tar: ${ScriptTnamE} sis_t ficheiro.tar /directory/complete"
+                echo "Example .tar.gz: ${ScriptTnamE}} sis_tgz ficheiro.tar.gz /directory/complete"
                 echo
                 exit 0
         fi
         echo
-        cecho "Descompactando ficheiros..." $boldyellow
+        cecho "Retrieving files..." "$boldyellow"
         echo
 
-        cd $1
-        if [ "$2" == "sis_tar" ]; then
-                /bin/tar cvf $3 *
-        fi
-        if [ "$2" == "sis_targz" ]; then
-                /bin/tar czvf $3 *
-        fi
+        cd "$3" ||  { LIB::cd_error_message "$3" "2"; exit 1; }
+        case "$1" in
+                sis_t)
+                        /bin/tar cvf "$2" ./*
+                        ;;
+                sis_tgz)
+                        /bin/tar czvf "$2" ./*
+                        ;;
+        esac
 
         echo
         echo "---------------------"
@@ -280,8 +289,8 @@ function UnTarGZ {
         clear
         if [ -z "$2" ]; then
                 echo "� preciso especificar o nome do FICHEIRO, assim:"
-                echo "Exemplo: `basename $0` sis_untar ficheiro.tar"
-                echo "Exemplo: `basename $0` sis_untargz ficheiro.tar.gz"
+                echo "Example .tar: ${ScriptTnamE} sis_ut ficheiro.tar /directory/complete"
+                echo "Example .tar.gz: ${ScriptTnamE} sis_utgz ficheiro.tar.gz /directory/complete"
                 echo
                 exit 0
         fi
@@ -289,13 +298,15 @@ function UnTarGZ {
         echo "Descompactando ficheiros..."
         echo
 
-        cd $1
-        if [ "$2" == "sis_untar" ]; then
-                /bin/tar xvf $3
-        fi
-        if [ "$2" == "sis_untargz" ]; then
-                /bin/tar xzvf $3
-        fi
+        cd "$3" ||  { LIB::cd_error_message "$3" "2"; exit 1; }
+        case "$1" in
+                sis_ut)
+                        /bin/tar xvf "$2" ./*
+                        ;;
+                sis_utgz)
+                        /bin/tar xzvf "$2" ./*
+                        ;;
+        esac
 
         echo
         echo "---------------------"
@@ -383,13 +394,13 @@ function sistema:HDSentinel {
         echo "Installing HD Sentinel Linux ..."
         echo
 
-        cd /home/_src
+        cd /home/_src ||  { LIB::cd_error_message "/home/_src"; return; }
         wget http://www.hdsentinel.com/hdslin/hdsentinel_008_x64.zip
         unzip hdsentinel*_x64.zip
         mv HDSentinel hdsentinel
         chmod 700 hdsentinel
         mv hdsentinel /usr/sbin/
-        cd /home/_src
+        cd /home/_src || { LIB::cd_error_message "/home/_src"; return; }
         rm -f hdsentinel*.zip
         echo
         echo "... [ DONE ]"
@@ -486,8 +497,8 @@ function CRON:actividade_files_HOUR {
         echo "Files Ver Actividade..."
         echo
 
-        nomeServo=`hostname`
-        vart=`date -d'now-1 hours' +"%Hh,%_d %b"`
+        local nomeServo=$(hostname)
+        local vart=$(date -d'now-1 hours' +"%Hh,%_d %b")
         #-o -mmin -70 -type f
         VARX=$( find -L /home/*/public_html -cmin -70 -type f | grep -Piv "/(?:[0-9a-f]{5})" | grep -Piv "/error_log" | grep -Piv "sess_" | grep -Piv "/mage---*" | grep -Piv "/cache(-|_)(?:[0-9a-f]{5})" | grep -Piv "/(css|js)(-|_)(?:[0-9a-f]{5})" | grep -Piv "(?:[0-9a-f]{5}).*.(php|tpl|txt|cache|html)" | grep -Piv "/%%.*.(php|tpl)" | grep -Piv ".(ftpquota|boost|md|db|xpa|txt|old|gzip|html_gzip|touch|xml|css|log|meta|ini|gz|cache|expire|json|lock|info|pdf|doc|dox|xls|xlsx|woff2|svg|ttf|eot|csv|DS_Store|mo|po|config|autoclean)$" | grep -Piv "/jwsig_cache_(?:[0-9a-f]{5})" | grep -Piv "/cache/k2.items.cache." | grep -Piv "~~~~_" | grep -Piv "cache.product.total." | grep -Piv "/jwsigpro_cache_.*.(jpg|png)" | grep -Piv "/logs/error.php" | grep -Piv "/(cache|wfcache)/.*.html" | grep -Piv "/configCache.php"  > /home/_src/temp.1.files_activity.log )
         TEMPFTP=`cat /home/_src/temp.1.files_activity.log`

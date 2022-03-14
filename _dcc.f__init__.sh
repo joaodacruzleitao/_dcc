@@ -9,42 +9,44 @@
 #    Read the configuration file _dcc.config.yaml
 #***----------------------------------------------***
 #- userdata: -#
-UZER=$(shyaml get-value userdata.user < _dcc.config.yaml)
-FTPPASS=$(shyaml get-value userdata.ftppass  < _dcc.config.yaml)
+export UZER=$(shyaml get-value userdata.user < _dcc.config.yaml)
+export FTPPASS=$(shyaml get-value userdata.ftppass  < _dcc.config.yaml)
 #- destination: -#
-DESTINO1=$(shyaml get-value destination.destino1 < _dcc.config.yaml)
-DESTINO2=$(shyaml get-value destination.destino2 < _dcc.config.yaml)
+export DESTINO1=$(shyaml get-value destination.destino1 < _dcc.config.yaml)
+export DESTINO2=$(shyaml get-value destination.destino2 < _dcc.config.yaml)
 ###- Especial para a funcao BACKUPnas2 -###
-BACKUPGERAL1=$(shyaml get-value destination.backupgeral1 < _dcc.config.yaml)
+export BACKUPGERAL1=$(shyaml get-value destination.backupgeral1 < _dcc.config.yaml)
 ###-E!
 ###- Especial para a funcao BACKUPdiario -###
-DIRBTMP=$(shyaml get-value destination.dirbtmp < _dcc.config.yaml)
-DUPLICITY1=$(shyaml get-value destination.duplicity1 < _dcc.config.yaml)
-DUPLICITY2=$(shyaml get-value destination.destino2 < _dcc.config.yaml)
+export DIRBTMP=$(shyaml get-value destination.dirbtmp < _dcc.config.yaml)
+export DUPLICITY1=$(shyaml get-value destination.duplicity1 < _dcc.config.yaml)
+export DUPLICITY2=$(shyaml get-value destination.destino2 < _dcc.config.yaml)
 ###-E!
 #- servidores: -#
-DIAS=$(shyaml get-value servers.dias < _dcc.config.yaml)
-SERVIDORBACKUP=$(shyaml get-value servidores.servidorip < _dcc.config.yaml)
+export DIAS=$(shyaml get-value servers.dias < _dcc.config.yaml)
+export SERVIDORBACKUP=$(shyaml get-value servidores.servidorip < _dcc.config.yaml)
 ###- General EMAIL Destination for program sending email
-EMAIL_de_ENVIO=$(shyaml get-value servidores.emailDeDestino < _dcc.v.yaml)
+export EMAIL_de_ENVIO=$(shyaml get-value servidores.emailDeDestino < _dcc.v.yaml)
 ###-E!
 #- script: -#
 ###- read from file _dcc.v.yaml, specially made only for version
-SCRIPT_VERSION=$(shyaml get-value userdata.user < _dcc.v.yaml)
+export SCRIPT_VERSION=$(shyaml get-value userdata.user < _dcc.v.yaml)
 ###-E!
-SCRIPT_DATE=$(shyaml get-value script.date < _dcc.v.yaml)
-SCRIPT_AUTHOR=$(shyaml get-value script.author < _dcc.v.yaml)
-SCRIPT_URL=$(shyaml get-value script.url < _dcc.v.yaml)
-COPYRIGHT=$(shyaml get-value script.disclaimer < _dcc.v.yaml)
+export SCRIPT_DATE=$(shyaml get-value script.date < _dcc.v.yaml)
+export SCRIPT_AUTHOR=$(shyaml get-value script.author < _dcc.v.yaml)
+export SCRIPT_URL=$(shyaml get-value script.url < _dcc.v.yaml)
+export COPYRIGHT=$(shyaml get-value script.disclaimer < _dcc.v.yaml)
 #- script: -#
-PROGRAMANOME=$(shyaml get-value script.programanome < _dcc.v.yaml)
-NOMEF="${PROGRAMANOME} ${SCRIPT_VERSION} (${SCRIPT_DATE})\n${COPYRIGHT} ${SCRIPT_AUTHOR}"
-NOMEFINAL="${PROGRAMANOME} ${SCRIPT_VERSION} (${SCRIPT_DATE})      Author: $SCRIPT_AUTHOR"
+export PROGRAMANOME=$(shyaml get-value script.programanome < _dcc.v.yaml)
+export NOMEF="${PROGRAMANOME} ${SCRIPT_VERSION} (${SCRIPT_DATE})\n${COPYRIGHT} ${SCRIPT_AUTHOR}"
+export NOMEFINAL="${PROGRAMANOME} ${SCRIPT_VERSION} (${SCRIPT_DATE})      Author: $SCRIPT_AUTHOR"
 #***----------------------------------------------***
 
 #***----------------------------------------------***
 #    Declare fixed values
 #***----------------------------------------------***
+
+export ScriptTnamE=$(basename "$0")
 ###- Get date and time
 DT=$(date +"%d%m%y-%H%M%S")
 ###-E!

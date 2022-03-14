@@ -5,27 +5,43 @@
 #  | SECTION:INICIAL 2 -> BEGIN
 #  .................................................................
 
+function LIB::cd_error_message() {
+        #---------------------------------------
+        # Mensagem de erro quando fazemos um
+        # cd /directoria e ele da erro, se
+        # 1 ele cria a directoria
+        # 2 ele diz que tem erro
+        #---------------------------------------
+        if [ "$2" == "2" ]; then
+                echo >&2 "Can't read $1. Make sure the directory exists, and try again."
+        else
+                mkdir $1 /home/_src; cd $1;
+        fi
+}
+
 function pause(){
         #---------------------------------------
-        # Espera que se carregue na tecla ENTER
+        # Wait for the keyboard ENTER
         #---------------------------------------
-        read -p "$*"
+        read -r -p "$*"
 }
 
 
 function ASK () {
         #---------------------------------------
-        # Espera que se introduza no ecr�
-        # uma palvra ou frase
+        # Waiting in the screen for
+        # a word or phrase
         #---------------------------------------
-        keystroke=''
+        local keystroke=''
+        local key
+
         while [[ "$keystroke" != [yYnN] ]]
         do
                 $ASKCMD "$1" keystroke
                 echo "$keystroke";
         done
 
-        key=$(echo $keystroke)
+        key=$(echo "$keystroke")
 }
 
 
@@ -35,9 +51,12 @@ function cecho () {
         # Argument $1 = message
         # Argument $2 = color
         #---------------------------------------
+        local message
+        local color
+
         message=$1
         color=$2
-        echo -e "$color$message" ; $Reset
+        echo -e "$color$message" ; "$Reset"
         return
 }
 
@@ -70,15 +89,15 @@ function RSYNC {
                 echo "Installing Rsync 3.0...."
                 echo
                 mkdir /home/_src
-                cd /home/_src
+                cd /home/_src || { LIB::cd_error_message "/home/_src"; return; }
                 wget -c  http://www.samba.org/ftp/rsync/src/rsync-3.0.9.tar.gz
                 tar -xzf  rsync-3.0.9.tar.gz
-                cd rsync-3.0.0/
+                cd rsync-3.0.0/ || { LIB::cd_error_message "rsync-3.0.0/"; return; }
                 ./configure
                 #--prefix=/opt/rsync
                 make
                 make install
-                cd /home/_src
+                cd /home/_src || { LIB::cd_error_message "/home/_src"; return; }
                 rm -rf rsync*
                 echo
                 echo ".... [ INSTALLED ]"
@@ -145,10 +164,15 @@ function PMODULES {
         clear
         echo
         echo "Check & Installing PERL MODULES for Nginx...."
-        REQUIREDMODULES=( "IPC::Open3" "JSON::Syck" "Data::Dumper" "XML::DOM" "Getopt::Long" "XML::Simple" "XML::DOM" )
-        NEEDSCHECK=()
-        NOTINSTALLED=()
-        ALLINSTALLED=1
+        local REQUIREDMODULES=( "IPC::Open3" "JSON::Syck" "Data::Dumper" "XML::DOM" "Getopt::Long" "XML::Simple" "XML::DOM" )
+        local NEEDSCHECK=()
+        local NOTINSTALLED=()
+        local ALLINSTALLED=1
+        local PERLRESULT
+        local i
+        local SIZEOFNEEDS
+        local ismodulethere
+        local foundmodule
 
         PERLRESULT=$( perl -MCGI -e "1" 2>&1)
         if [[ $PERLRESULT != "" ]]; then
@@ -156,18 +180,18 @@ function PMODULES {
                 do
                         echo "installing $i"
                         echo "....."
-                        /scripts/perlinstaller $i >/dev/null 2>&1
+                        /scripts/perlinstaller "$i" >/dev/null 2>&1
                 done
         else
                 #Otherwise, test each module before install
                 for i in "${REQUIREDMODULES[@]}"
                 do
-                        foundmodule=$(perl -M$i -e "1" 2>&1)
+                        foundmodule=$(perl -M"$i" -e "1" 2>&1)
                         if [[ "$foundmodule" != "" ]]; then
                                 echo "$i is NOT installed"
                                 echo "installing $i"
                                 echo "....."
-                                /scripts/perlinstaller $i >/dev/null 2>&1
+                                /scripts/perlinstaller "$i" >/dev/null 2>&1
                                 echo "....."
                                 NEEDSCHECK=( "${NEEDSCHECK[@]}" "$i" ) #prevent unset issues with array -1
                         fi
@@ -180,7 +204,7 @@ function PMODULES {
                 echo "....."
                 for i in "${NEEDSCHECK[@]}"
                 do
-                        ismodulethere=$(perl -M$i -e "1" 2>&1)
+                        ismodulethere=$(perl -M"$i" -e "1" 2>&1)
                         if [[ "$ismodulethere" == "" ]]; then
                                 echo "$i is installed properly"
                                 echo "....."
@@ -394,21 +418,21 @@ function CHECK_DIRECTORIAS {
         VERSAOCPANEL1=$VERSAOCPANEL0
         VERSAOCPANEL=$VERSAOCPANEL1
         VCONTROLE=40
-        if [ $VCONTROLE -le $VERSAOCPANEL ]; then
+        if [ $VCONTROLE -le "$VERSAOCPANEL" ]; then
                 if [ ! -f "/usr/bin/clamscan" ]; then
                         if [ ! -h "/usr/bin/clamscan" ]; then
-                                cd /usr/bin
+                                cd /usr/bin || return;
                                 ln -s /usr/local/cpanel/3rdparty/bin/clamscan clamscan
-                                cd /root
+                                cd /root || return;
                         fi
                 fi
         fi
         #---
         if [ $VCONTROLE -le $VERSAOCPANEL ]; then
-                if [[ ! -d `readlink /var/lib/clamav` ]]; then
+                if [[ ! -d $(readlink /var/lib/clamav) ]]; then
                         rm -rf /var/lib/clamav
                         ln -s /usr/local/cpanel/3rdparty/share/clamav /var/lib/clamav
-                        cd /home/_src
+                        cd /home/_src || { mkdir -p /home/_src; cd /home/_src; }
                 fi
         else
                 if [[ ! -d `readlink /var/lib/clamav` ]]; then
@@ -621,13 +645,16 @@ function GEOIP1st {
         # e faz a seguir o download e update da
         # bd de paises.
         #---------------------------------------
+        local ARQUITETURA
+        local VERSAOOS
+
         ARQUITETURA=$( uname -m )
         VERSAOOS=$( uname -r | grep -i el5 )
         mkdir /home/_src  > /dev/null 2>&1
-        cd /home/_src
+        cd /home/_src || { LIB::cd_error_message "/home/_src"; return; }
 
         #_________________________
-        # instalar o RPMFORGE Repository
+        # Install RPMFORGE Repository
         if [ ! -f "/etc/yum.repos.d/rpmforge.repo" ] ; then
                 if [ "${ARQUITETURA}" == "x86_64" ] ; then
                         if [ "${VERSAOOS}" == "" ] ; then
@@ -749,13 +776,13 @@ function GEOIP {
         echo "1) Check/Create /usr/local/apache/conf/modsec_rules"
         mkdir /usr/local/apache/conf/modsec_rules  >/dev/null 2>&1
         echo "2) Calling /usr/local/apache/conf/modsec_rules"
-        cd /usr/local/apache/conf/modsec_rules
+        cd /usr/local/apache/conf/modsec_rules || { LIB::cd_error_message "/usr/local/apache/conf/modsec_rules"; return; }
         echo "3) Getting GeLiteCity.dat.gz"
         wget -N -q http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz
         echo "4) Unzipping GeLiteCity.dat.gz"
-        rm -f *.dat > /dev/null 2>&1
-        gunzip *.gz
-        cd /root
+        rm -f ./*.dat > /dev/null 2>&1
+        gunzip ./*.gz
+        cd /root || { LIB::cd_error_message "/root"; return; }
         echo
         echo -e "... [ DONE ]"
         echo

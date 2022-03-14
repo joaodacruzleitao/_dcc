@@ -13,17 +13,27 @@ Script_FUll_Path=$(pwd)
 export Script_FUll_Path
 
 ###- read all variables and configurations
-source "$Script_FUll_Path"/_dcc.f__init__.sh
-source "$Script_FUll_Path"/_dcc.f__init1__.sh
-source "$Script_FUll_Path"/_dcc.f__init2__.sh
-source "$Script_FUll_Path"/_dcc.f_sistema_.sh
-source "$Script_FUll_Path"/_dcc.f_backups_.sh
-source "$Script_FUll_Path"/_dcc.f_seguranca_.sh
-source "$Script_FUll_Path"/_dcc.f_cpanel_.sh
-source "$Script_FUll_Path"/_dcc.f_nginx_.sh
-source "$Script_FUll_Path"/_dcc.f_varnish_.sh
-source "$Script_FUll_Path"/_dcc.f_bd_.sh
-source "$Script_FUll_Path"/_dcc.f_menus_.sh
+source "$Script_FUll_Path"/_dcc.f__INIT__.sh
+###- Pre Requisits, Initialize tasks like installing and clearing
+source "$Script_FUll_Path"/_dcc.f__PREREQ__.sh
+###- Library of General Functions
+source "$Script_FUll_Path"/_dcc.f__LIB__.sh
+###- Library of System Functions
+source "$Script_FUll_Path"/_dcc.f_SIS_.sh
+###- Library of Backup Functions
+source "$Script_FUll_Path"/_dcc.f_BKP_.sh
+###- Library of Security Functions
+source "$Script_FUll_Path"/_dcc.f_SEC_.sh
+###- Library of cPanel Functions
+source "$Script_FUll_Path"/_dcc.f_cPanel_.sh
+###- Library of Nginx Functions
+source "$Script_FUll_Path"/_dcc.f_nGinX_.sh
+###- Library of Varnish Functions
+source "$Script_FUll_Path"/_dcc.f_VRISH_.sh
+###- Library of DataBase Functions
+source "$Script_FUll_Path"/_dcc.f_BD_.sh
+###- Library of Menu Functions
+source "$Script_FUll_Path"/_dcc.f_MNU_.sh
 
 #***----------------------------------------------***
 #    Check if everything is installed correctly
@@ -233,20 +243,20 @@ case "$1" in
                 CpanelHooksObrigatorios
                 exit 0
                 ;;
-        sis_untar)
-                UnTarGZ ${Script_FUll_Path} $1 $2
+        sis_ut)
+                UnTarGZ "$1" "$2" "$3"
                 exit 0
                 ;;
-        sis_untargz)
-                UnTarGZ ${Script_FUll_Path} $1 $2
+        sis_utgz)
+                UnTarGZ "$1" "$2" "$3"
                 exit 0
                 ;;
-        sis_tar)
-                TarGZ ${Script_FUll_Path} $1 $2
+        sis_t)
+                TarGZ "$1" "$2" "$3"
                 exit 0
                 ;;
-        sis_targz)
-                TarGZ "${Script_FUll_Path}" "$1" "$2"
+        sis_tgz)
+                TarGZ "$1" "$2" "$3"
                 exit 0
                 ;;
         sis_ftpa)
