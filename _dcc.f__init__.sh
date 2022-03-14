@@ -6,7 +6,7 @@
 #---***
 
 #***----------------------------------------------***
-#    Read the configuration file _dcc.config.yaml
+#    Read the configuration file _config.yaml
 #***----------------------------------------------***
 #- userdata: -#
 export UZER=$(shyaml get-value userdata.user < _dcc.config.yaml)
@@ -29,7 +29,7 @@ export SERVIDORBACKUP=$(shyaml get-value servidores.servidorip < _dcc.config.yam
 export EMAIL_de_ENVIO=$(shyaml get-value servidores.emailDeDestino < _dcc.v.yaml)
 ###-E!
 #- script: -#
-###- read from file _dcc.v.yaml, specially made only for version
+###- read from file _config.v.yaml, specially made only for version
 export SCRIPT_VERSION=$(shyaml get-value userdata.user < _dcc.v.yaml)
 ###-E!
 export SCRIPT_DATE=$(shyaml get-value script.date < _dcc.v.yaml)

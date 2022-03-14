@@ -319,6 +319,16 @@ function FtpVerActividade {
         # Verifica no /var/log/messages
         # a actividade do FTP
         #---------------------------------------
+        local nomeServo
+        local varz
+        local vart
+        local VARX
+        local CONTROLAisto
+        local IP
+        local IP2
+        local TEMPFTP
+
+
         clear
         echo
         echo "FTP Ver Actividade..."
@@ -344,7 +354,7 @@ function FtpVerActividade {
         done < "/home/_src/temp.1.ftp_activity.log"
         TEMPFTP=`cat /home/_src/temp.2.ftp_activity.log`
         if [[ $TEMPFTP != "" ]]; then
-                /bin/mailx -s "FTP Activity on ${nomeServo} at ${vart}" servidores@datasource.pt < /home/_src/temp.2.ftp_activity.log
+                /bin/mailx -s "FTP Activity on ${nomeServo} at ${vart}" ${EMAIL_de_ENVIO} < /home/_src/temp.2.ftp_activity.log
         fi
         rm -f /home/_src/temp.1.ftp_activity.log
         rm -f /home/_src/temp.2.ftp_activity.log
@@ -492,18 +502,22 @@ function CRON:actividade_files_HOUR {
         # Ve a Actividade de ficheiros
         # no /public_html
         #---------------------------------------
+        local nomeServo
+        local VARX
+        local TEMPFTP
+
         clear
         echo
         echo "Files Ver Actividade..."
         echo
 
-        local nomeServo=$(hostname)
-        local vart=$(date -d'now-1 hours' +"%Hh,%_d %b")
+        nomeServo=$(hostname)
+        vart=$(date -d'now-1 hours' +"%Hh,%_d %b")
         #-o -mmin -70 -type f
         VARX=$( find -L /home/*/public_html -cmin -70 -type f | grep -Piv "/(?:[0-9a-f]{5})" | grep -Piv "/error_log" | grep -Piv "sess_" | grep -Piv "/mage---*" | grep -Piv "/cache(-|_)(?:[0-9a-f]{5})" | grep -Piv "/(css|js)(-|_)(?:[0-9a-f]{5})" | grep -Piv "(?:[0-9a-f]{5}).*.(php|tpl|txt|cache|html)" | grep -Piv "/%%.*.(php|tpl)" | grep -Piv ".(ftpquota|boost|md|db|xpa|txt|old|gzip|html_gzip|touch|xml|css|log|meta|ini|gz|cache|expire|json|lock|info|pdf|doc|dox|xls|xlsx|woff2|svg|ttf|eot|csv|DS_Store|mo|po|config|autoclean)$" | grep -Piv "/jwsig_cache_(?:[0-9a-f]{5})" | grep -Piv "/cache/k2.items.cache." | grep -Piv "~~~~_" | grep -Piv "cache.product.total." | grep -Piv "/jwsigpro_cache_.*.(jpg|png)" | grep -Piv "/logs/error.php" | grep -Piv "/(cache|wfcache)/.*.html" | grep -Piv "/configCache.php"  > /home/_src/temp.1.files_activity.log )
-        TEMPFTP=`cat /home/_src/temp.1.files_activity.log`
+        TEMPFTP=$(cat /home/_src/temp.1.files_activity.log)
         if [[ $TEMPFTP != "" ]]; then
-                /bin/mailx -s "FILES Activity on ${nomeServo} at ${vart}" servidores@datasource.pt < /home/_src/temp.1.files_activity.log
+                /bin/mailx -s "FILES Activity on ${nomeServo} at ${vart}" "${EMAIL_de_ENVIO}" < /home/_src/temp.1.files_activity.log
         fi
         rm -f /home/_src/temp.1.files_activity.log
 
